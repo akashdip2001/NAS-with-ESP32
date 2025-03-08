@@ -578,4 +578,5 @@ Upload this file to the SD card as `/index.html`. through USB
 ---
 
 ![IMG20250308221709](https://github.com/user-attachments/assets/b1c8eb0d-6575-43b2-9c65-146dc0eb7df7)
-![NAS System](https://github.com/user-attachments/assets/45ffbb73-7364-4d2a-aaf8-0b6f8698d352)
+[![NAS System](https://github.com/user-attachments/assets/45ffbb73-7364-4d2a-aaf8-0b6f8698d352)](https://youtu.be/4c-fYHE_p90)
+`click to see the YouTube demonstration video`
