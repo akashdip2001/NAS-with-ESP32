@@ -3,7 +3,7 @@ Network-attached storage with ESP WROOM 32
 
 ![SetUP](https://github.com/user-attachments/assets/756d28b0-82b4-49c3-b0cf-9cf150bb8596)
 
-## Testing Code
+## Testing Code (LAN_32.ino)
 
 ```cpp
 #include <WiFi.h>
@@ -362,7 +362,7 @@ This way, users could access the general file server on port 80 and the NAS admi
 
 ---
 
-### 📌 **Code**
+### 📌 **Code** (ESP32_NAS_SD.ino)
 
 ```cpp
 #include <WiFi.h>
@@ -477,7 +477,7 @@ void loop() {}
 ---
 
 ### 📌 **Upload & File Management Web UI (`index.html`)**
-Upload this file to the SD card as `/index.html`.
+Upload this file to the SD card as `/index.html`. through USB
 
 ```html
 <!DOCTYPE html>
