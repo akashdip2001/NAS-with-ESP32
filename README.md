@@ -567,6 +567,12 @@ Upload this file to the SD card as `/index.html`. through USB
 
 ---
 
+</br>
+
+https://github.com/user-attachments/assets/6a2e7d65-608a-420c-a2bd-98cd0c5588f5
+
+</br>
+
 ### 📌 **How to Use This ESP32 NAS System**
 1. **Flash the ESP32 Code** to your ESP-WROOM-32.
 2. **Connect to Wi-Fi** using your **SSID & Password**.
