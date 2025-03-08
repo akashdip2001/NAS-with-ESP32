@@ -1,6 +1,11 @@
 # NAS-with-ESP32
 Network-attached storage with ESP WROOM 32
 
+![IMG20250308224147](https://github.com/user-attachments/assets/990f521b-1cbf-4b56-bc4b-e6813886b94f)
+
+<details>
+  <summary style="opacity: 0.85;">Testing Code for LAN</b></summary><br>
+
 ![SetUP](https://github.com/user-attachments/assets/756d28b0-82b4-49c3-b0cf-9cf150bb8596)
 
 ## Testing Code (LAN_32.ino)
@@ -173,6 +178,9 @@ void loop() {
   delay(500);
 }
 ```
+
+</details>
+  
 <details>
   <summary style="opacity: 0.85;">Download Required Libraries</b></summary><br>
 
@@ -568,3 +576,5 @@ Upload this file to the SD card as `/index.html`. through USB
    - The **web UI** will show up where you can **upload, download, and delete** files.
 
 ---
+
+![IMG20250308221709](https://github.com/user-attachments/assets/b1c8eb0d-6575-43b2-9c65-146dc0eb7df7)
