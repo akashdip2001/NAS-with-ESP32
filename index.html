@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ESP32 NAS Server</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; background: #f2f2f2; }
+    h1 { color: #333; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .section { margin-bottom: 30px; }
+    .file-list ul { list-style-type: none; padding: 0; }
+    .file-list li { padding: 8px; border-bottom: 1px solid #ddd; }
+    .file-list li a { text-decoration: none; color: #007BFF; }
+    .file-list li a:hover { text-decoration: underline; }
+    input[type="text"], input[type="file"] { width: 100%; padding: 8px; margin: 5px 0; }
+    input[type="submit"] { padding: 10px 20px; background: #007BFF; border: none; color: #fff; border-radius: 4px; cursor: pointer; }
+    input[type="submit"]:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>ESP32 NAS Server</h1>
+    <p>Welcome to the ESP32 NAS Server. Here you can view, upload, and delete files stored on the SD card.</p>
+
+    <div class="section file-list">
+      <h2>Files</h2>
+      <ul>
+        <!-- List your files here. You may generate this list dynamically on the ESP32. -->
+        <li><a href="/index.html">index.html</a></li>
+        <li><a href="/example.txt">example.txt</a></li>
+      </ul>
+    </div>
+
+    <div class="section upload-form">
+      <h2>Upload File</h2>
+      <form action="http://<ESP_IP>:8080/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="uploadFile" required>
+        <br>
+        <input type="submit" value="Upload File">
+      </form>
+      <p><em>Note: Authentication is required. Use the appropriate username and password when prompted.</em></p>
+    </div>
+
+    <div class="section delete-form">
+      <h2>Delete File</h2>
+      <form action="http://<ESP_IP>:8080/delete" method="get">
+        <label for="filename">Filename to delete:</label>
+        <input type="text" id="filename" name="file" placeholder="/example.txt" required>
+        <br>
+        <input type="submit" value="Delete File">
+      </form>
+      <p><em>Note: Authentication is required. Use the appropriate username and password when prompted.</em></p>
+    </div>
+  </div>
+</body>
+</html>
