@@ -1,4 +1,4 @@
-![Screenshot (202)](https://github.com/user-attachments/assets/9c4ec83e-a8ec-4040-ab89-96fe7df392c3)# NAS-with-ESP32
+# NAS-with-ESP32
 Network-attached storage with ESP WROOM 32
 
 ![SetUP](https://github.com/user-attachments/assets/756d28b0-82b4-49c3-b0cf-9cf150bb8596)
@@ -340,9 +340,14 @@ This way, users could access the general file server on port 80 and the NAS admi
 
 ---
 
+<div style="display: flex; align-items: center; gap: 10px;" align="center">
+  
 # ⭐ NAS feature
+</div>
 
 ---
+
+![Screenshot (202)](https://github.com/user-attachments/assets/9c4ec83e-a8ec-4040-ab89-96fe7df392c3)
 
 ✅ **ESP32 as a NAS server** (File storage, upload, delete, list)  
 ✅ **Drag & Drop File Upload**  
