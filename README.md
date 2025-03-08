@@ -243,7 +243,7 @@ The error should now be resolved, and your sketch should compile successfully.
    </div>
 </details>
 
-# Explane the Code
+# 🛠️ Explane the above Code
 
 ## 1. Separate Endpoints for Read-Only and Edit Operations
 
