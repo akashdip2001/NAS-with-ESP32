@@ -741,11 +741,40 @@ void setup() {
   server.begin();
 }
 ```
+
+### **Fixes the IP to `192.168.4.1`** permanently    
+
 ---
 
-### 🎯 **What This Does**
-- 🛑 **Fixes the IP to `192.168.4.1`** permanently  
-- 🔗 **No need to check the Serial Monitor** after restarting  
-- 💻 **All users will always connect using `http://192.168.4.1/`**  
-- 🚀 **Ensures stable connection within your local network**  
+# ✅ Download `File NAme` fix
 
+```cpp
+// Download files
+server.on("/download", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->hasParam("file")) {
+        String filename = "/" + request->getParam("file")->value();
+        if (SD.exists(filename)) {
+            AsyncWebServerResponse *response = request->beginResponse(SD, filename, "application/octet-stream");
+            response->addHeader("Content-Disposition", "attachment; filename=\"" + request->getParam("file")->value() + "\"");
+            request->send(response);
+        } else {
+            request->send(404, "text/plain", "File not found");
+        }
+    } else {
+        request->send(400, "text/plain", "Missing file parameter");
+    }
+});
+```
+
+---
+
+### also download from URl using `query parameters`
+
+Provide the file name in the request URL.  
+For example, if you want to download `"example.pdf"`, access the URL like this:  
+
+```arduino
+http://192.168.4.1/download?file=example.pdf
+```
+
+---
