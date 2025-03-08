@@ -721,9 +721,9 @@ void setup() {
   Serial.begin(115200);
 
   // Static IP Address for ESP32 in AP mode
-  IPAddress local_IP(192.168.4.1);
-  IPAddress gateway(192.168.4.1);
-  IPAddress subnet(255.255.255.0);
+  IPAddress local_IP(192, 168, 4, 1);
+  IPAddress gateway(192, 168, 4, 1);
+  IPAddress subnet(255, 255, 255, 0);
 
   // Set ESP32 as an Access Point
   WiFi.softAP(ap_ssid, ap_password);
