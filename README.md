@@ -340,7 +340,9 @@ AsyncWebServer nasServer(8080);
 This way, users could access the general file server on port 80 and the NAS admin interface on port 8080. Note that if you truly need separate IPs, you’d require multiple network interfaces—which isn’t typical on the ESP32.
 
 ![Screenshot (199)](https://github.com/user-attachments/assets/4128eaf9-dc4c-4e94-bc83-e94df3f61d33)
+
 </details>
+
 ---
 
 <div style="display: flex; align-items: center; gap: 10px;" align="center">
