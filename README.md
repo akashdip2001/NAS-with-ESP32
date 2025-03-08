@@ -339,3 +339,251 @@ This way, users could access the general file server on port 80 and the NAS admi
 ![Screenshot (199)](https://github.com/user-attachments/assets/4128eaf9-dc4c-4e94-bc83-e94df3f61d33)
 
 ## ❌ NAS feature not work --- Now fox the Problam
+
+Access the NAS, upload HTML files, and allow all users to access the uploaded HTML. Additionally, with a sample HTML file and another page to manage NAS files (upload, view, delete).  
+
+---
+
+### **How This Works**
+- The ESP32 serves a web page (from `index.html` on the SD card) over **port 80**.
+- The NAS (Network Attached Storage) functionalities run on **port 8080**:
+  - **View files** (`/files`) – List all files on the SD card.
+  - **Upload files** (`/upload`) – Upload new files to the SD card.
+  - **Delete files** (`/delete?file=filename`) – Delete a file from the SD card.
+- The uploaded HTML file (`index.html`) is accessible to all users connected to the ESP32's Wi-Fi network.
+
+---
+
+### **Complete ESP32 Code**
+Save this as `ESP32_NAS_SD.ino` and upload it to your ESP32.
+
+```cpp
+#include <WiFi.h>
+#include <SPI.h>
+#include <SD.h>
+#include <ESPAsyncWebServer.h>
+
+#define LED_PIN 2      // Onboard LED pin
+#define SD_CS    5     // Chip Select pin for SD card
+
+const char* ssid = "spa";           // WiFi SSID
+const char* password = "12345678";  // WiFi Password
+
+AsyncWebServer server(80);   // Server for general file serving
+AsyncWebServer nasServer(8080); // NAS for file operations
+
+File uploadFile;
+
+// Handle file uploads
+void handleUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
+  if (index == 0) {
+    uploadFile = SD.open("/" + filename, FILE_WRITE);
+    if (!uploadFile) {
+      request->send(500, "text/plain", "Failed to open file for writing");
+      return;
+    }
+  }
+  if (uploadFile) {
+    uploadFile.write(data, len);
+  }
+  if (final) {
+    uploadFile.close();
+    request->send(200, "text/plain", "File uploaded successfully");
+  }
+}
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(LED_PIN, OUTPUT);
+  
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
+  }
+  Serial.println("\nWiFi connected");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+
+  if (!SD.begin(SD_CS)) {
+    Serial.println("SD Card Initialization Failed");
+    return;
+  }
+
+  // Serve stored HTML files
+  server.onNotFound([](AsyncWebServerRequest *request) {
+    String path = request->url();
+    if (path.endsWith("/")) path += "index.html"; 
+    String contentType = "text/html";
+    if (!SD.exists(path)) {
+      request->send(404, "text/html", "<h1>File not found</h1>");
+      return;
+    }
+    request->send(SD, path, contentType);
+  });
+
+  server.begin();
+
+  // NAS File Listing
+  nasServer.on("/files", HTTP_GET, [](AsyncWebServerRequest *request) {
+    String fileList = "";
+    File root = SD.open("/");
+    File file = root.openNextFile();
+    while (file) {
+      fileList += String(file.name()) + "\n";
+      file.close();
+      file = root.openNextFile();
+    }
+    request->send(200, "text/plain", fileList);
+  });
+
+  // NAS File Upload
+  nasServer.on("/upload", HTTP_POST, [](AsyncWebServerRequest *request) {
+    if (!request->authenticate("admin", "password")) {
+      return request->requestAuthentication();
+    }
+    request->send(200);
+  }, handleUpload);
+
+  // NAS File Delete
+  nasServer.on("/delete", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (!request->authenticate("admin", "password")) {
+      return request->requestAuthentication();
+    }
+    if (request->hasParam("file")) {
+      String filename = request->getParam("file")->value();
+      if (SD.exists(filename)) {
+        SD.remove(filename);
+        request->send(200, "text/plain", "File deleted");
+      } else {
+        request->send(404, "text/plain", "File not found");
+      }
+    } else {
+      request->send(400, "text/plain", "Bad request: no file specified");
+    }
+  });
+
+  nasServer.begin();
+}
+
+void loop() {
+  digitalWrite(LED_PIN, HIGH);
+  delay(500);
+  digitalWrite(LED_PIN, LOW);
+  delay(500);
+}
+```
+
+---
+
+### **How to Access NAS & Upload Files**
+#### **Step 1: Connect to Wi-Fi**
+1. Connect your device to the **ESP32 Wi-Fi network** (`spa` with password `12345678`).
+2. Find the ESP32’s **IP address** (printed in the Serial Monitor).
+
+#### **Step 2: Access the Web Page**
+- Open a browser and go to:
+  ```
+  http://<ESP32_IP_ADDRESS>/
+  ```
+  If `index.html` exists on the SD card, it will be displayed.
+
+#### **Step 3: Upload HTML & Other Files**
+- Use **Postman** or **cURL**:
+  ```
+  curl -u admin:password -F "file=@index.html" http://<ESP32_IP>:8080/upload
+  ```
+  - `admin/password` is required.
+
+#### **Step 4: View Uploaded Files**
+- Open:
+  ```
+  http://<ESP32_IP>:8080/files
+  ```
+
+#### **Step 5: Delete a File**
+- Open:
+  ```
+  http://<ESP32_IP>:8080/delete?file=index.html
+  ```
+  - This requires authentication (`admin/password`).
+
+---
+
+### **Sample `index.html` (Main Webpage)**
+Save this file as `index.html` and upload it to the SD card.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 NAS</title>
+</head>
+<body>
+    <h1>Welcome to ESP32 NAS</h1>
+    <p>Use the links below to manage files:</p>
+    <ul>
+        <li><a href="files.html">Manage NAS Files</a></li>
+    </ul>
+</body>
+</html>
+```
+
+---
+
+### **Sample `files.html` (File Management Page)**
+Save this file as `files.html` and upload it to the SD card.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Manager</title>
+</head>
+<body>
+    <h1>ESP32 File Manager</h1>
+    
+    <h2>Upload a File</h2>
+    <form action="http://<ESP32_IP>:8080/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
+    </form>
+
+    <h2>Available Files</h2>
+    <ul id="fileList"></ul>
+
+    <script>
+        fetch("http://<ESP32_IP>:8080/files")
+            .then(response => response.text())
+            .then(data => {
+                let files = data.split("\n");
+                let list = document.getElementById("fileList");
+                files.forEach(file => {
+                    if (file) {
+                        let li = document.createElement("li");
+                        li.innerHTML = `<a href="${file}" target="_blank">${file}</a> 
+                                        <button onclick="deleteFile('${file}')">Delete</button>`;
+                        list.appendChild(li);
+                    }
+                });
+            });
+
+        function deleteFile(filename) {
+            fetch(`http://<ESP32_IP>:8080/delete?file=${filename}`, { method: 'GET' })
+                .then(() => location.reload());
+        }
+    </script>
+</body>
+</html>
+```
+
+---
+
+### **Final Notes**
+- Upload `index.html` first, then `files.html` using the **NAS Upload feature**.
+- Access **file management** via `http://<ESP32_IP>/files.html`.
+- Modify `<ESP32_IP>` with your ESP32's actual IP address.
