@@ -595,8 +595,10 @@ https://github.com/user-attachments/assets/6a2e7d65-608a-420c-a2bd-98cd0c5588f5
 
 https://github.com/user-attachments/assets/364b583e-49a3-4190-b6eb-6cd866269ae4
 
-✅ create own WIFI access poin.
-✅ Fix IP Address
+- ### ✅ create own WIFI access poin.
+- ### ✅ Fix IP Address
+
+</br>
 
 ```cpp
 #include <WiFi.h>
@@ -707,7 +709,7 @@ void loop() {}
 
 ---
 
-### ✅ **Solution: Fix the IP Address**
+### ⬇️ **Fix the IP Address**
 By default, the ESP32 assigns itself **`192.168.4.1`** when running as an Access Point. However, To make it explicit and ensure it **always** uses this IP, modify with **WiFi.softAPConfig()** function.
 
 ---
