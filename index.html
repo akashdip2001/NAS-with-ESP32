@@ -1,56 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>ESP32 NAS Server</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 40px; background: #f2f2f2; }
-    h1 { color: #333; }
-    .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .section { margin-bottom: 30px; }
-    .file-list ul { list-style-type: none; padding: 0; }
-    .file-list li { padding: 8px; border-bottom: 1px solid #ddd; }
-    .file-list li a { text-decoration: none; color: #007BFF; }
-    .file-list li a:hover { text-decoration: underline; }
-    input[type="text"], input[type="file"] { width: 100%; padding: 8px; margin: 5px 0; }
-    input[type="submit"] { padding: 10px 20px; background: #007BFF; border: none; color: #fff; border-radius: 4px; cursor: pointer; }
-    input[type="submit"]:hover { background: #0056b3; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>ESP32 NAS Server</h1>
-    <p>Welcome to the ESP32 NAS Server. Here you can view, upload, and delete files stored on the SD card.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ESP32 NAS</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      #drop-area {
+        border: 2px dashed #ccc;
+        padding: 20px;
+        margin: 20px;
+      }
+      .hidden {
+        display: none;
+      }
+      button {
+        padding: 10px;
+        margin: 10px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ESP32 NAS System</h1>
 
-    <div class="section file-list">
-      <h2>Files</h2>
-      <ul>
-        <!-- List your files here. You may generate this list dynamically on the ESP32. -->
-        <li><a href="/index.html">index.html</a></li>
-        <li><a href="/example.txt">example.txt</a></li>
-      </ul>
+    <div id="drop-area">
+      <p>Drag & Drop Files Here</p>
+      <input type="file" id="fileInput" multiple />
+      <button onclick="uploadFiles()">Upload</button>
     </div>
 
-    <div class="section upload-form">
-      <h2>Upload File</h2>
-      <form action="http://<ESP_IP>:8080/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="uploadFile" required>
-        <br>
-        <input type="submit" value="Upload File">
-      </form>
-      <p><em>Note: Authentication is required. Use the appropriate username and password when prompted.</em></p>
-    </div>
+    <h2>Available Files</h2>
+    <div id="file-list">Loading...</div>
 
-    <div class="section delete-form">
-      <h2>Delete File</h2>
-      <form action="http://<ESP_IP>:8080/delete" method="get">
-        <label for="filename">Filename to delete:</label>
-        <input type="text" id="filename" name="file" placeholder="/example.txt" required>
-        <br>
-        <input type="submit" value="Delete File">
-      </form>
-      <p><em>Note: Authentication is required. Use the appropriate username and password when prompted.</em></p>
-    </div>
-  </div>
-</body>
+    <script>
+      document.addEventListener("DOMContentLoaded", loadFiles);
+
+      function loadFiles() {
+        fetch("/files")
+          .then((response) => response.text())
+          .then(
+            (data) => (document.getElementById("file-list").innerHTML = data)
+          )
+          .catch(
+            () =>
+              (document.getElementById("file-list").innerHTML =
+                "Failed to load files.")
+          );
+      }
+
+      function uploadFiles() {
+        let files = document.getElementById("fileInput").files;
+        if (!files.length) return alert("No file selected!");
+
+        for (let file of files) {
+          let formData = new FormData();
+          formData.append("file", file, file.name);
+
+          fetch("/upload", { method: "POST", body: formData })
+            .then((response) => response.text())
+            .then(() => {
+              alert(file.name + " uploaded!");
+              loadFiles();
+            })
+            .catch(() => alert("Upload failed!"));
+        }
+      }
+
+      function deleteFile(filename) {
+        if (!confirm("Delete " + filename + "?")) return;
+
+        fetch("/delete?file=" + filename)
+          .then((response) => response.text())
+          .then(() => {
+            alert(filename + " deleted!");
+            loadFiles();
+          })
+          .catch(() => alert("Delete failed!"));
+      }
+
+      // Drag & Drop Upload Feature
+      let dropArea = document.getElementById("drop-area");
+      dropArea.addEventListener("dragover", (event) => event.preventDefault());
+      dropArea.addEventListener("drop", (event) => {
+        event.preventDefault();
+        document.getElementById("fileInput").files = event.dataTransfer.files;
+      });
+    </script>
+  </body>
 </html>
