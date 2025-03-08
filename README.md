@@ -230,6 +230,8 @@ After installing the libraries and setting up the board:
 
 The error should now be resolved, and your sketch should compile successfully.
 
+---
+
 <details>
   <summary style="opacity: 0.85;"><b>🔧 image Guide⚙️🛠️ Guide</b></summary><br>
   <div style="display: flex; align-items: center; gap: 10px;" align="center">
@@ -242,6 +244,10 @@ The error should now be resolved, and your sketch should compile successfully.
 
    </div>
 </details>
+
+---
+
+![IMG_20250308_154611](https://github.com/user-attachments/assets/37e0efe7-3013-45dc-ad0c-d28827264f8b)
 
 # 🛠️ Explane the above Code
 
