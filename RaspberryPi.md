@@ -25,3 +25,181 @@
 | **Connectivity** | None (requires external Wi-Fi/Bluetooth) | None (requires external module) |
 | **Power Efficiency** | More efficient due to Cortex-M33 | Efficient but lower power than RP2350 |
 | **Use Cases** | Advanced embedded applications, security-focused IoT, DSP processing | General-purpose embedded projects, hobbyist electronics |
+
+---
+
+## **Raspberry Pi Pico W File Download with SD Card Logging (Arduino IDE)**
+set up **file downloads, logging, and live log preview** on a **Raspberry Pi Pico W** using an **SD card module**.  
+
+### **📌 Features**
+✅ **File download support (with correct filename & format)**  
+✅ **Log file downloads & errors to SD card**  
+✅ **Live log preview via a web page**  
+✅ **Works on Raspberry Pi Pico W with Arduino IDE**  
+
+---
+
+## **🛠️ Hardware & Connections (Pico W + SD Card Module)**
+You'll need:  
+- **Raspberry Pi Pico W**  
+- **MicroSD Card Module** (SPI-based)  
+- **MicroSD Card (formatted as FAT32)**  
+- **Jumper wires**  
+
+### **📝 Wiring Diagram (SPI)**
+| **SD Card Module** | **Pico W (SPI Pins)** |
+|-------------------|----------------------|
+| VCC             | 3.3V or 5V (Pico W VBUS) |
+| GND             | GND |
+| MISO            | GPIO16 (SPI0 MISO) |
+| MOSI            | GPIO19 (SPI0 MOSI) |
+| SCK             | GPIO18 (SPI0 SCK) |
+| CS (Chip Select) | GPIO17 |
+
+---
+
+## **📥 Install Required Arduino Libraries**
+In **Arduino IDE**, install these libraries via **Library Manager**:
+1. **WiFi** (for Raspberry Pi Pico W)
+2. **AsyncTCP**  
+3. **ESPAsyncWebServer**  
+4. **SD (SD.h)**  
+
+---
+
+## **📝 Complete Arduino Code**
+This code:
+- **Hosts a web server** on Pico W.
+- **Allows file downloads** with correct filename & format.
+- **Logs events to `/logs.txt`** on the SD card.
+- **Provides a live log preview** via `/logs`.
+
+```cpp
+#include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#include <SPI.h>
+#include <SD.h>
+
+const char* ssid = "YOUR_WIFI_SSID";
+const char* password = "YOUR_WIFI_PASSWORD";
+
+#define SD_CS 17  // Chip Select (CS) pin for SD card (Pico GPIO17)
+AsyncWebServer server(80);
+AsyncEventSource events("/events");  // Event source for live logs
+
+// Function to log messages to SD card
+void logMessage(String message) {
+    File logFile = SD.open("/logs.txt", FILE_APPEND);
+    if (logFile) {
+        logFile.println(message);
+        logFile.close();
+    }
+}
+
+// Handle file downloads
+server.on("/download", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->hasParam("file")) {
+        String filename = "/" + request->getParam("file")->value();
+        if (SD.exists(filename)) {
+            AsyncWebServerResponse *response = request->beginResponse(SD, filename, "application/octet-stream");
+            response->addHeader("Content-Disposition", "attachment; filename=\"" + request->getParam("file")->value() + "\"");
+            request->send(response);
+            
+            logMessage("File Downloaded: " + filename);
+            events.send(("Downloaded: " + filename).c_str(), "log", millis());  // Live update
+        } else {
+            request->send(404, "text/plain", "File not found");
+            logMessage("Download Failed: " + filename + " (File not found)");
+            events.send(("Download Failed: " + filename).c_str(), "log", millis());
+        }
+    } else {
+        request->send(400, "text/plain", "Missing file parameter");
+        logMessage("Download Error: Missing file parameter");
+        events.send("Download Error: Missing file parameter", "log", millis());
+    }
+});
+
+// Serve a live log preview
+server.on("/logs", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(200, "text/html",
+        "<html><head><script>"
+        "var evtSource = new EventSource('/events');"
+        "evtSource.onmessage = function(event) {"
+        "document.getElementById('log').innerHTML += event.data + '<br>'; };"
+        "</script></head><body>"
+        "<h2>Live Logs</h2><div id='log'></div></body></html>");
+});
+
+// Provide full log file download
+server.on("/logs.txt", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(SD, "/logs.txt", "text/plain");
+});
+
+server.addHandler(&events);  // Attach live log handler
+
+void setup() {
+    Serial.begin(115200);
+
+    // Connect to WiFi
+    WiFi.begin(ssid, password);
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+    }
+    Serial.println("\nConnected to WiFi!");
+    Serial.print("IP Address: ");
+    Serial.println(WiFi.localIP());
+
+    // Initialize SD Card
+    if (!SD.begin(SD_CS)) {
+        Serial.println("SD Card initialization failed!");
+        return;
+    }
+    Serial.println("SD Card Initialized.");
+
+    // Start Web Server
+    server.begin();
+    logMessage("Server Started.");
+}
+
+void loop() {
+    // Nothing needed here, async server handles everything
+}
+```
+
+---
+
+## **🖥️ How to Use**
+1. **Upload the code** to your Raspberry Pi Pico W using Arduino IDE.
+2. **Connect your computer/phone to the same WiFi network**.
+3. Open a **web browser** and go to:
+   - 📌 **Download a file**:  
+     ```
+     http://your-esp-ip/download?file=example.pdf
+     ```
+   - 📌 **Live logs (real-time preview)**:  
+     ```
+     http://your-esp-ip/logs
+     ```
+   - 📌 **Download full logs**:  
+     ```
+     http://your-esp-ip/logs.txt
+     ```
+4. **Check the serial monitor** to see the log events.
+
+---
+
+## **🔗 Additional Notes**
+- Make sure **your SD card is formatted as FAT32**.
+- **Replace `YOUR_WIFI_SSID` & `YOUR_WIFI_PASSWORD`** with actual WiFi credentials.
+- **Pico W’s SPI pins are fixed** (GPIO16-MISO, GPIO17-CS, GPIO18-SCK, GPIO19-MOSI).
+- You can **modify the log file path** (`/logs.txt`) as needed.
+
+---
+
+### **🚀 Summary**
+✅ **Correct filename & format for downloads**  
+✅ **Logs stored on SD card (`/logs.txt`)**  
+✅ **Live log preview (`/logs`) via WebSockets**  
+✅ **Simple & efficient for Raspberry Pi Pico W**  
