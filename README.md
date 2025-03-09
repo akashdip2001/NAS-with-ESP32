@@ -776,5 +776,120 @@ For example, if you want to download `"example.pdf"`, access the URL like this:
 ```arduino
 http://192.168.4.1/download?file=example.pdf
 ```
+---
 
+<div style="display: flex; align-items: center; gap: 10px;" align="center">
+ 
+## [👆 Just Download the Adrino UNO file and use](https://github.com/akashdip2001/NAS-with-ESP32/blob/main/final_Mar_2025.ino)
+*all above feature include
+</div>
+
+---
+
+# 🛠️ Updated Code for Logging & Live Preview (optional)
+
+✅ **Stores logs in an SD card file (e.g., `/logs.txt`).**  
+✅ **Serves a live preview of logs via a web page (`/logs`).**  
+✅ **Updates logs dynamically using Server-Sent Events (SSE).**  
+
+```cpp
+#include <ESPAsyncWebServer.h>
+#include <SPI.h>
+#include <SD.h>
+
+AsyncWebServer server(80);
+AsyncEventSource events("/events");  // For live updates
+
+// Function to log messages
+void logMessage(String message) {
+    File logFile = SD.open("/logs.txt", FILE_APPEND);
+    if (logFile) {
+        logFile.println(message);
+        logFile.close();
+    }
+}
+
+// Handle file downloads with logging
+server.on("/download", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->hasParam("file")) {
+        String filename = "/" + request->getParam("file")->value();
+        if (SD.exists(filename)) {
+            AsyncWebServerResponse *response = request->beginResponse(SD, filename, "application/octet-stream");
+            response->addHeader("Content-Disposition", "attachment; filename=\"" + request->getParam("file")->value() + "\"");
+            request->send(response);
+            
+            // Log download event
+            logMessage("File Downloaded: " + filename);
+            events.send(("Downloaded: " + filename).c_str(), "log", millis());  // Send live update
+        } else {
+            request->send(404, "text/plain", "File not found");
+            logMessage("Download Failed: " + filename + " (File not found)");
+            events.send(("Download Failed: " + filename).c_str(), "log", millis());
+        }
+    } else {
+        request->send(400, "text/plain", "Missing file parameter");
+        logMessage("Download Error: Missing file parameter");
+        events.send("Download Error: Missing file parameter", "log", millis());
+    }
+});
+
+// Serve logs as a web page with live updates
+server.on("/logs", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(200, "text/html",
+        "<html><head><script>"
+        "var evtSource = new EventSource('/events');"
+        "evtSource.onmessage = function(event) {"
+        "document.getElementById('log').innerHTML += event.data + '<br>'; };"
+        "</script></head><body>"
+        "<h2>Live Logs</h2><div id='log'></div></body></html>");
+});
+
+// Provide a static file for logs (to download full logs)
+server.on("/logs.txt", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(SD, "/logs.txt", "text/plain");
+});
+
+server.addHandler(&events);  // Attach event handler
+
+void setup() {
+    Serial.begin(115200);
+    if (!SD.begin()) {
+        Serial.println("SD Card initialization failed!");
+        return;
+    }
+    server.begin();
+    logMessage("Server Started.");
+}
+
+void loop() {
+    // Nothing needed here, async server handles everything
+}
+```
+
+---
+
+1. **Persistent Logs:** Stored on SD card.  
+   **Logs Are Saved in `/logs.txt`:**  
+   - Every download request (success or failure) is stored.  
+
+2. **Live Log Preview (`/logs`):** using Server-Sent Events (SSE) 
+   - Opens a web page that dynamically updates logs in real-time.  
+
+3. **Full Log File Download (`/logs.txt`):**  
+   - Allows downloading complete log history.  
+
+---
+
+📌 **To download a file:**  
+```
+http://192.168.4.1/download?file=example.pdf
+```
+📌 **To see live logs:**  
+```
+http://192.168.4.1/logs
+```
+📌 **To download full logs:**  
+```
+http://192.168.4.1/logs.txt
+```
 ---
