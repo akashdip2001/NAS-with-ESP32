@@ -4,7 +4,6 @@ Network-attached storage with ESP WROOM 32
 ## 🛜 ESP connect to WIFI wifi access point
 
 ![IMG20250308224147](https://github.com/user-attachments/assets/990f521b-1cbf-4b56-bc4b-e6813886b94f)
-
 <details>
   <summary style="opacity: 0.85;">Testing Code for LAN</b></summary><br>
 
@@ -893,3 +892,5 @@ http://192.168.4.1/logs
 http://192.168.4.1/logs.txt
 ```
 ---
+
+<img src="connection.jpg">
