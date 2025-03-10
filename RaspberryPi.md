@@ -213,10 +213,3 @@ void loop() {
 | **Use Cases** | Advanced embedded applications, security-focused IoT, DSP processing | General-purpose embedded projects, hobbyist electronics |
 
 ---
-
-
-### **🚀 Summary**
-✅ **Correct filename & format for downloads**  
-✅ **Logs stored on SD card (`/logs.txt`)**  
-✅ **Live log preview (`/logs`) via WebSockets**  
-✅ **Simple & efficient for Raspberry Pi Pico W**  
