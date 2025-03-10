@@ -40,146 +40,209 @@ You'll need:
   <img src="https://github.com/user-attachments/assets/5458a463-bbd4-46cf-be75-0567643aa84e" width="48%">
 </div>
 
+</br>
+</br>
+
+<details>
+  <summary style="opacity: 0.85;"></b>✅ install libraries before compiling</summary><br>
+
+Below is a complete, revised sketch for the Raspberry Pi Pico W that includes all the requested features (Wi‑Fi AP mode, serving an index page, file listing, upload/download, and deletion) using the Pico‑friendly SDFS library and AsyncWebServer_RP2040W. Note that the SDFS library’s open() function expects the file mode as a string (e.g. "r", "w") rather than an integer flag like FILE_WRITE. Also, when opening the root directory for listing files, you must specify the mode (typically "r" for reading).
+
+Make sure you have installed the **AsyncWebServer_RP2040W** and **SDFS** libraries before compiling.
+
 ---
 
-## **📥 Install Required Arduino Libraries**
-In **Arduino IDE**, install these libraries via **Library Manager**:
-1. **WiFi** (for Raspberry Pi Pico W)
-2. **AsyncTCP**  
-3. **ESPAsyncWebServer**  
-4. **SD (SD.h)**  
+![Screenshot (212)](https://github.com/user-attachments/assets/a374e3ef-6b13-4e96-865f-7545433479d8)
+![Screenshot (213)](https://github.com/user-attachments/assets/3908cd1e-5ee3-4b59-8606-c28be923924e)
+![Screenshot (214)](https://github.com/user-attachments/assets/205e75cd-a315-4a1b-9277-f17f006a9cfb)
 
+</details>
+  
 ---
-
-## **📝 Complete Arduino Code**
-This code:
-- **Hosts a web server** on Pico W.
-- **Allows file downloads** with correct filename & format.
-- **Logs events to `/logs.txt`** on the SD card.
-- **Provides a live log preview** via `/logs`.
 
 ```cpp
-#include <WiFi.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-#include <SPI.h>
-#include <SD.h>
+#include <WiFi.h>                  // Wi-Fi library for Pico W
+#include <SPI.h>                   // SPI library for SD card communication
+#include <SDFS.h>                  // Pico‑specific SD library (implements fs::FS)
+#include <AsyncWebServer_RP2040W.h>  // Asynchronous web server library
 
-const char* ssid = "YOUR_WIFI_SSID";
-const char* password = "YOUR_WIFI_PASSWORD";
+// Define SD Card pins for SPI0
+#define SD_CS    17
+#define SD_SCK   18
+#define SD_MOSI  19
+#define SD_MISO  16
 
-#define SD_CS 17  // Chip Select (CS) pin for SD card (Pico GPIO17)
+// Wi-Fi Access Point credentials
+const char *ap_ssid = "Space";
+const char *ap_password = "Mahapatra";
+
+// Create the AsyncWebServer object on port 80
 AsyncWebServer server(80);
-AsyncEventSource events("/events");  // Event source for live logs
 
-// Function to log messages to SD card
-void logMessage(String message) {
-    File logFile = SD.open("/logs.txt", FILE_APPEND);
-    if (logFile) {
-        logFile.println(message);
-        logFile.close();
-    }
+// Global file object for handling file uploads
+File uploadFile;
+
+// Create a filesystem reference from SDFS
+// (Named "sdFS" to avoid conflict with the "fs" namespace)
+fs::FS &sdFS = SDFS;
+
+// Function to handle file uploads via HTTP POST to "/upload"
+// This function is called repeatedly as chunks of the file are received.
+void handleUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
+  if (index == 0) {
+    // For the first chunk, build the full file path and open the file in write mode.
+    // Using "w" opens (and truncates if it exists) the file for writing.
+    String filePath = "/" + filename;
+    uploadFile = sdFS.open(filePath.c_str(), "w");
+  }
+  if (uploadFile) {
+    // Write the current chunk to the file.
+    uploadFile.write(data, len);
+  }
+  if (final) {
+    // When the last chunk is received, close the file and send a response.
+    uploadFile.close();
+    request->send(200, "text/plain", "Upload Complete");
+  }
 }
 
-// Handle file downloads
-server.on("/download", HTTP_GET, [](AsyncWebServerRequest *request) {
-    if (request->hasParam("file")) {
-        String filename = "/" + request->getParam("file")->value();
-        if (SD.exists(filename)) {
-            AsyncWebServerResponse *response = request->beginResponse(SD, filename, "application/octet-stream");
-            response->addHeader("Content-Disposition", "attachment; filename=\"" + request->getParam("file")->value() + "\"");
-            request->send(response);
-            
-            logMessage("File Downloaded: " + filename);
-            events.send(("Downloaded: " + filename).c_str(), "log", millis());  // Live update
-        } else {
-            request->send(404, "text/plain", "File not found");
-            logMessage("Download Failed: " + filename + " (File not found)");
-            events.send(("Download Failed: " + filename).c_str(), "log", millis());
-        }
-    } else {
-        request->send(400, "text/plain", "Missing file parameter");
-        logMessage("Download Error: Missing file parameter");
-        events.send("Download Error: Missing file parameter", "log", millis());
-    }
-});
-
-// Serve a live log preview
-server.on("/logs", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(200, "text/html",
-        "<html><head><script>"
-        "var evtSource = new EventSource('/events');"
-        "evtSource.onmessage = function(event) {"
-        "document.getElementById('log').innerHTML += event.data + '<br>'; };"
-        "</script></head><body>"
-        "<h2>Live Logs</h2><div id='log'></div></body></html>");
-});
-
-// Provide full log file download
-server.on("/logs.txt", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(SD, "/logs.txt", "text/plain");
-});
-
-server.addHandler(&events);  // Attach live log handler
-
 void setup() {
-    Serial.begin(115200);
+  Serial.begin(115200);
+  while (!Serial);  // Wait for the serial connection
 
-    // Connect to WiFi
-    WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
+  // Initialize SPI0 for SD card communication using defined pins.
+  SPI.setRX(SD_MISO);
+  SPI.setTX(SD_MOSI);
+  SPI.setSCK(SD_SCK);
+  SPI.begin();
+
+  // Initialize the SD card using SDFS. (SDFS.begin() takes no parameters.)
+  if (!SDFS.begin()) {
+    Serial.println("SD Card Mount Failed");
+    return;
+  }
+  Serial.println("SD Card Initialized Successfully");
+
+  // Set up the Pico W as a Wi-Fi Access Point
+  WiFi.softAP(ap_ssid, ap_password);
+  Serial.println("\nWiFi AP Started!");
+  Serial.print("AP IP Address: ");
+  Serial.println(WiFi.softAPIP());
+
+  // Serve the index page at the root URL "/"
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (sdFS.exists("/index.html")) {
+      // Send the file if it exists on the SD card.
+      request->send(sdFS, "/index.html", "text/html");
+    } else {
+      request->send(404, "text/plain", "index.html not found");
     }
-    Serial.println("\nConnected to WiFi!");
-    Serial.print("IP Address: ");
-    Serial.println(WiFi.localIP());
+  });
 
-    // Initialize SD Card
-    if (!SD.begin(SD_CS)) {
-        Serial.println("SD Card initialization failed!");
-        return;
+  // List all files on the SD card (accessed via "/files")
+  server.on("/files", HTTP_GET, [](AsyncWebServerRequest *request) {
+    String fileList = "<h2>File List</h2><ul>";
+    // Open the root directory in read mode ("r")
+    File root = sdFS.open("/", "r");
+    if (root) {
+      File file = root.openNextFile();
+      while (file) {
+        fileList += "<li><a href='/download?file=" + String(file.name()) + "'>" + String(file.name()) +
+                    "</a> <button onclick='deleteFile(\"" + String(file.name()) + "\")'>Delete</button></li>";
+        file = root.openNextFile();
+      }
     }
-    Serial.println("SD Card Initialized.");
+    fileList += "</ul>";
+    request->send(200, "text/html", fileList);
+  });
 
-    // Start Web Server
-    server.begin();
-    logMessage("Server Started.");
+  // Download a file from the SD card (accessed via "/download?file=filename")
+  server.on("/download", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->hasParam("file")) {
+      String filename = "/" + request->getParam("file")->value();
+      if (sdFS.exists(filename)) {
+        // Create a response that streams the file for download.
+        AsyncWebServerResponse *response = request->beginResponse(sdFS, filename, "application/octet-stream");
+        response->addHeader("Content-Disposition", "attachment; filename=\"" + request->getParam("file")->value() + "\"");
+        request->send(response);
+      } else {
+        request->send(404, "text/plain", "File not found");
+      }
+    } else {
+      request->send(400, "text/plain", "Missing file parameter");
+    }
+  });
+
+  // Delete a file from the SD card (accessed via "/delete?file=filename")
+  server.on("/delete", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->hasParam("file")) {
+      String filename = "/" + request->getParam("file")->value();
+      if (sdFS.exists(filename)) {
+        sdFS.remove(filename);
+        request->send(200, "text/plain", "File Deleted");
+      } else {
+        request->send(404, "text/plain", "File not found");
+      }
+    }
+  });
+
+  // Handle file uploads via HTTP POST to "/upload"
+  // The file data is streamed to the handleUpload() function.
+  server.on("/upload", HTTP_POST, [](AsyncWebServerRequest *request) {
+    // This callback is called once the file upload is complete.
+    request->send(200, "text/plain", "Upload Complete");
+  }, handleUpload);
+
+  // Start the web server
+  server.begin();
 }
 
 void loop() {
-    // Nothing needed here, async server handles everything
+  // No code is needed here because AsyncWebServer handles requests in the background.
 }
 ```
 
 ---
 
-## **🖥️ How to Use**
-1. **Upload the code** to your Raspberry Pi Pico W using Arduino IDE.
-2. **Connect your computer/phone to the same WiFi network**.
-3. Open a **web browser** and go to:
-   - 📌 **Download a file**:  
-     ```
-     http://your-esp-ip/download?file=example.pdf
-     ```
-   - 📌 **Live logs (real-time preview)**:  
-     ```
-     http://your-esp-ip/logs
-     ```
-   - 📌 **Download full logs**:  
-     ```
-     http://your-esp-ip/logs.txt
-     ```
-4. **Check the serial monitor** to see the log events.
+### **Explanation**
+
+1. **SD Card Initialization & SPI Setup:**  
+   The SPI interface is configured with your specified pins, and the SD card is mounted using the SDFS library.  
+   *If the SD card fails to mount, the sketch prints an error and halts further execution.*
+
+2. **Wi‑Fi Access Point:**  
+   The Pico W is set up as an access point using the provided SSID and password. The AP’s IP address is printed to the Serial Monitor.
+
+3. **Web Server Endpoints:**  
+   - **Root ("/")**: Serves `index.html` from the SD card if available.  
+   - **"/files"**: Lists all files in the SD card’s root directory, with download and delete buttons.  
+   - **"/download"**: Allows downloading a file from the SD card.  
+   - **"/delete"**: Deletes a specified file from the SD card.  
+   - **"/upload"**: Accepts file uploads in chunks; the `handleUpload` function writes these chunks to a new file.
+
+4. **File Mode Strings:**  
+   Instead of using numeric flags, the code now uses standard C‑string modes ("w" for writing and "r" for reading) to open files.
+
+5. **Filesystem Reference:**  
+   A filesystem reference (`sdFS`) is created from SDFS. This reference is used throughout the sketch for file operations, making it easier to switch to another filesystem in the future if needed.
 
 ---
 
-## **🔗 Additional Notes**
-- Make sure **your SD card is formatted as FAT32**.
-- **Replace `YOUR_WIFI_SSID` & `YOUR_WIFI_PASSWORD`** with actual WiFi credentials.
-- **Pico W’s SPI pins are fixed** (GPIO16-MISO, GPIO17-CS, GPIO18-SCK, GPIO19-MOSI).
-- You can **modify the log file path** (`/logs.txt`) as needed.
+### **Next Steps**
 
+1. **Hardware Check:**  
+   Verify that your SD card module is wired correctly to the Pico W as per your configuration.
+
+2. **Library Installation:**  
+   Ensure that the **AsyncWebServer_RP2040W** and **SDFS** libraries are installed in your Arduino IDE.
+
+3. **Upload & Test:**  
+   - Upload the sketch to your Pico W.
+   - Connect a device to the Wi‑Fi AP (SSID: "Space", Password: "Mahapatra").
+   - In a web browser, navigate to the Pico W’s IP (e.g., `http://192.168.4.1/`).
+   - Test the file listing, upload, download, and deletion functionalities.
+
+This complete code should compile and run on your Raspberry Pi Pico W, providing all the desired features for your IoT project.
 ---
 
 [![pico-1s](https://github.com/user-attachments/assets/5efcebda-6d8e-4b36-8bda-87485b911a84)](https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html#documentation)
