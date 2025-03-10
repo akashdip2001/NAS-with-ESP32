@@ -367,9 +367,11 @@ The error should now be resolved, and your sketch should compile successfully.
 <div style="display: flex; align-items: center; gap: 10px;" align="center">
   
 # ⭐ NAS System ⭐
+## ⭐ ESP_32 not as ACCESS Point⚙️ ⭐
 </div>
 
 ---
+⚙️ When you power on ESP32 it's try to connect to a ACCESS point (mobile hotsport or Router)
 
 ![Screenshot (202)](https://github.com/user-attachments/assets/9c4ec83e-a8ec-4040-ab89-96fe7df392c3)
 
@@ -381,7 +383,7 @@ The error should now be resolved, and your sketch should compile successfully.
 
 ---
 
-### 📌 **Code** (ESP32_NAS_SD.ino)
+### 📌 **Code** (NAS_32_connect_with_access_point.ino)
 
 ```cpp
 #include <WiFi.h>
@@ -609,8 +611,16 @@ https://github.com/user-attachments/assets/6a2e7d65-608a-420c-a2bd-98cd0c5588f5
 `click the above image ⬆ to see the YouTube demonstration video`
 
 ---
+---
 
-## 🛜 ESP create a WIFI wifi access point
+<div style="display: flex; align-items: center; gap: 10px;" align="center">
+  
+## ⭐ ESP_32 as ACCESS Point⚙️ ⭐
+</div>
+
+---
+
+## ⚙️🛜 ESP create a WIFI access point
 
 https://github.com/user-attachments/assets/364b583e-49a3-4190-b6eb-6cd866269ae4
 
