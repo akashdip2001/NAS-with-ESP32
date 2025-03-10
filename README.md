@@ -483,6 +483,12 @@ void setup() {
 void loop() {}
 ```
 
+<div style="display: flex; align-items: center; gap: 10px;" align="center">
+  
+### 👆 [Download the Adrino file](NAS_32_connect_with_access_point.ino)
+*this code include all above features
+</div>
+
 ---
 
 ### 📌 **Upload & File Management Web UI (`index.html`)**
@@ -565,6 +571,10 @@ Upload this file to the SD card as `/index.html`. through USB
 </body>
 </html>
 ```
+<div style="display: flex; align-items: center; gap: 10px;" align="center">
+  
+### 👆 [Download the html file](index.html)
+</div>
 
 ---
 
@@ -779,7 +789,7 @@ http://192.168.4.1/download?file=example.pdf
 
 <div style="display: flex; align-items: center; gap: 10px;" align="center">
  
-## [👆 Just Download the Adrino UNO file and use](https://github.com/akashdip2001/NAS-with-ESP32/blob/main/final_Mar_2025.ino)
+## 👆 [Just Download the Adrino UNO file and use](NAS_32_create_access_point.ino)
 *all above feature include
 </div>
 
