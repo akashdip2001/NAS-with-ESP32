@@ -2,8 +2,12 @@
 `Click the above img to see the Documentation`
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/9504f339-d0c8-451c-82a5-c8d9e9602908" href="public/picow-pinout.svg" width="60%" style="margin-right: 10px;"/>
-  <img src="https://github.com/user-attachments/assets/2e3de8c8-0590-4552-b06e-2ea3b868447c" href="https://github.com/akashdip2001/NAS-with-ESP32/tree/main/public" alt="Raspberry pi" width="35%" style="margin-left: 10px;"/>
+  <a href="public/picow-pinout.svg">
+    <img src="https://github.com/user-attachments/assets/9504f339-d0c8-451c-82a5-c8d9e9602908" width="60%" style="margin-right: 10px;"/>
+  </a>
+  <a href="https://github.com/akashdip2001/NAS-with-ESP32/tree/main/public">
+    <img src="https://github.com/user-attachments/assets/2e3de8c8-0590-4552-b06e-2ea3b868447c" alt="Raspberry pi" width="35%" style="margin-left: 10px;"/>
+  </a>
 </p>
 
 `click the img to see in HD`
