@@ -1,3 +1,7 @@
+// I try to add Authentication when user try to UPLOAD & DELETE files
+// no need passward for Download & view the files
+// But the code have the Authentication problame
+// So, I cant'n continew the code...
 #include <WiFi.h>
 #include <SPI.h>
 #include <SD.h>
