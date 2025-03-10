@@ -1,36 +1,14 @@
-[![pico-1s](https://github.com/user-attachments/assets/5efcebda-6d8e-4b36-8bda-87485b911a84)](https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html#documentation)
-`Click the above img to see the Documentation`
-
-<p align="center">
-  <a href="public/picow-pinout.svg">
-    <img src="https://github.com/user-attachments/assets/9504f339-d0c8-451c-82a5-c8d9e9602908" width="60%" style="margin-right: 10px;"/>
-  </a>
-  <a href="https://github.com/akashdip2001/NAS-with-ESP32/tree/main/public">
-    <img src="https://github.com/user-attachments/assets/2e3de8c8-0590-4552-b06e-2ea3b868447c" alt="Raspberry pi" width="35%" style="margin-left: 10px;"/>
-  </a>
-</p>
-
-`click the img to see in HD`
-
----
-
-### **Comparison: RP2350 vs RP2040**
-| Feature         | **RP2350** | **RP2040** |
-|---------------|-----------|-----------|
-| **Processor** | Dual-core Arm Cortex-M33 | Dual-core Arm Cortex-M0+ |
-| **Clock Speed** | Up to 250 MHz | Up to 133 MHz |
-| **RAM** | 1MB SRAM | 264KB SRAM |
-| **Flash Memory** | External QSPI Flash | External QSPI Flash |
-| **Floating-Point Unit (FPU)** | Yes (with DSP instructions) | No |
-| **Security Features** | TrustZone, Secure Boot, AES encryption | None |
-| **GPIO Pins** | Similar to RP2040 | 30 multifunctional GPIO |
-| **Analog Inputs** | 8 ADC channels | 4 ADC channels |
-| **USB Support** | USB 2.0 High-Speed (480 Mbps) | USB 1.1 (12 Mbps) |
-| **Connectivity** | None (requires external Wi-Fi/Bluetooth) | None (requires external module) |
-| **Power Efficiency** | More efficient due to Cortex-M33 | Efficient but lower power than RP2350 |
-| **Use Cases** | Advanced embedded applications, security-focused IoT, DSP processing | General-purpose embedded projects, hobbyist electronics |
-
----
+<div style="display: flex; align-items: center; gap: 20px;" align="center">
+  
+  # NAS with Raspberry Pi Pico W
+  ### 🛠️ The code is under under development, Not use it Now
+</br>
+  <img src="https://github.com/user-attachments/assets/da67dbeb-43d0-499c-a6a8-7c8213f99893" width="48%">
+  <img src="https://github.com/user-attachments/assets/5458a463-bbd4-46cf-be75-0567643aa84e" width="48%">
+  <br>
+  <img src="https://github.com/user-attachments/assets/cc52c438-38f9-40d1-bbde-2d655391de7b" width="48%">
+  <img src="https://github.com/user-attachments/assets/501f579e-a40c-4b4f-b6f8-b55ade17408c" width="48%">
+</div>
 
 ## **Raspberry Pi Pico W File Download with SD Card Logging (Arduino IDE)**
 set up **file downloads, logging, and live log preview** on a **Raspberry Pi Pico W** using an **SD card module**.  
@@ -201,6 +179,41 @@ void loop() {
 - You can **modify the log file path** (`/logs.txt`) as needed.
 
 ---
+
+[![pico-1s](https://github.com/user-attachments/assets/5efcebda-6d8e-4b36-8bda-87485b911a84)](https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html#documentation)
+`Click the above img to see the Documentation`
+
+<p align="center">
+  <a href="public/picow-pinout.svg">
+    <img src="https://github.com/user-attachments/assets/9504f339-d0c8-451c-82a5-c8d9e9602908" width="60%" style="margin-right: 10px;"/>
+  </a>
+  <a href="https://github.com/akashdip2001/NAS-with-ESP32/tree/main/public">
+    <img src="https://github.com/user-attachments/assets/2e3de8c8-0590-4552-b06e-2ea3b868447c" alt="Raspberry pi" width="35%" style="margin-left: 10px;"/>
+  </a>
+</p>
+
+`click the img to see in HD`
+
+---
+
+### **Comparison: RP2350 vs RP2040**
+| Feature         | **RP2350** | **RP2040** |
+|---------------|-----------|-----------|
+| **Processor** | Dual-core Arm Cortex-M33 | Dual-core Arm Cortex-M0+ |
+| **Clock Speed** | Up to 250 MHz | Up to 133 MHz |
+| **RAM** | 1MB SRAM | 264KB SRAM |
+| **Flash Memory** | External QSPI Flash | External QSPI Flash |
+| **Floating-Point Unit (FPU)** | Yes (with DSP instructions) | No |
+| **Security Features** | TrustZone, Secure Boot, AES encryption | None |
+| **GPIO Pins** | Similar to RP2040 | 30 multifunctional GPIO |
+| **Analog Inputs** | 8 ADC channels | 4 ADC channels |
+| **USB Support** | USB 2.0 High-Speed (480 Mbps) | USB 1.1 (12 Mbps) |
+| **Connectivity** | None (requires external Wi-Fi/Bluetooth) | None (requires external module) |
+| **Power Efficiency** | More efficient due to Cortex-M33 | Efficient but lower power than RP2350 |
+| **Use Cases** | Advanced embedded applications, security-focused IoT, DSP processing | General-purpose embedded projects, hobbyist electronics |
+
+---
+
 
 ### **🚀 Summary**
 ✅ **Correct filename & format for downloads**  
