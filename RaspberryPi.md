@@ -8,10 +8,13 @@
   <img src="https://github.com/user-attachments/assets/501f579e-a40c-4b4f-b6f8-b55ade17408c" width="48%">
 </div>
 
+</br>
 <details>
   <summary style="opacity: 0.85;">Check Your PI is OK?</b></summary><br>
 
 ### Blinking LED
+
+https://github.com/user-attachments/assets/e81d2092-3b9e-410d-b3be-381dc17297ff
 
 ```cpp
 void setup() {
