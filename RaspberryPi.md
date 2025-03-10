@@ -3,9 +3,29 @@
   # NAS with Raspberry Pi Pico W
   ### 🛠️ The code is under under development, Not use it Now
 </br>
+
   <img src="https://github.com/user-attachments/assets/cc52c438-38f9-40d1-bbde-2d655391de7b" width="48%">
   <img src="https://github.com/user-attachments/assets/501f579e-a40c-4b4f-b6f8-b55ade17408c" width="48%">
 </div>
+
+<details>
+  <summary style="opacity: 0.85;">Check Your PI is OK?</b></summary><br>
+
+### Blinking LED
+
+```cpp
+void setup() {
+    pinMode(LED_BUILTIN, OUTPUT); // LED on Pico W
+}
+
+void loop() {
+    digitalWrite(LED_BUILTIN, HIGH); // Turn LED ON
+    delay(500);
+    digitalWrite(LED_BUILTIN, LOW); // Turn LED OFF
+    delay(500);
+}
+```
+</details>
 
 ## **Raspberry Pi Pico W File Download with SD Card Logging (Arduino IDE)**
 set up **file downloads, logging, and live log preview** on a **Raspberry Pi Pico W** using an **SD card module**.  
