@@ -55,6 +55,7 @@ Make sure you have installed the **AsyncWebServer_RP2040W** and **SDFS** librari
 ![Screenshot (212)](https://github.com/user-attachments/assets/a374e3ef-6b13-4e96-865f-7545433479d8)
 ![Screenshot (213)](https://github.com/user-attachments/assets/3908cd1e-5ee3-4b59-8606-c28be923924e)
 ![Screenshot (214)](https://github.com/user-attachments/assets/205e75cd-a315-4a1b-9277-f17f006a9cfb)
+![Screenshot (215)](https://github.com/user-attachments/assets/bdb8e6f9-9ec5-449b-a805-9daff7fd3bd5)
 
 </details>
   
@@ -242,7 +243,6 @@ void loop() {
    - In a web browser, navigate to the Pico W’s IP (e.g., `http://192.168.4.1/`).
    - Test the file listing, upload, download, and deletion functionalities.
 
-This complete code should compile and run on your Raspberry Pi Pico W, providing all the desired features for your IoT project.
 ---
 
 [![pico-1s](https://github.com/user-attachments/assets/5efcebda-6d8e-4b36-8bda-87485b911a84)](https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html#documentation)
