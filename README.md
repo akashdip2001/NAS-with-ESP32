@@ -5,11 +5,16 @@ Network-attached storage with ESP WROOM 32
 
 ![IMG20250308224147](https://github.com/user-attachments/assets/990f521b-1cbf-4b56-bc4b-e6813886b94f)
 <details>
-  <summary style="opacity: 0.85;">Testing Code for LAN</b></summary><br>
+  <summary style="opacity: 0.85;">❌ Testing Code with Authentication</b></summary><br>
 
 ![SetUP](https://github.com/user-attachments/assets/756d28b0-82b4-49c3-b0cf-9cf150bb8596)
 
-## Testing Code (LAN_32.ino)
+# Testing Code `with Authentication` (NAS_32_with_Authentication.ino)
+
+### // I try to add Authentication when user try to UPLOAD & DELETE files
+### // no need passward for Download & view the files
+### // But the code have the Authentication problame
+### // ❌ So, I cant'n continew the code and Re-Write a fresh code without any Authentication
 
 ```cpp
 #include <WiFi.h>
@@ -180,6 +185,12 @@ void loop() {
 }
 ```
 
+<div style="display: flex; align-items: center; gap: 10px;" align="center">
+  
+### 👆 [Download the Adrino file](NAS_32_with_Authentication.ino)
+*this code include all above features
+</div>
+
 # 🛠️ Explane the above Code
 
 ## 1. Separate Endpoints for Read-Only and Edit Operations
@@ -271,7 +282,7 @@ This way, users could access the general file server on port 80 and the NAS admi
 </details>
   
 <details>
-  <summary style="opacity: 0.85;">Download Required Libraries</b></summary><br>
+  <summary style="opacity: 0.85;">✅ Download Required Libraries</b></summary><br>
 
 ![Screenshot (191)](https://github.com/user-attachments/assets/5c1afd81-2e92-418c-bd81-fe010acb7cd1)
 
@@ -903,3 +914,12 @@ http://192.168.4.1/logs.txt
 ---
 
 <img src="connection.jpg">
+
+---
+
+<div style="display: flex; align-items: center; gap: 10px;" align="center">
+  
+# ⭐ want to [Try in Raspberry-Pi](RaspberryPi.md) ? ⭐
+</div>
+
+---
