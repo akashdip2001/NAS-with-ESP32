@@ -1,3 +1,4 @@
+// this is a NAS code for ESP32 --> TO CONNECT YOUR HOTSPOT (mobile aur home router) but this could not create its own access point.
 #include <WiFi.h>
 #include <SPI.h>
 #include <SD.h>
