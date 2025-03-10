@@ -28,6 +28,15 @@ void loop() {
     delay(500);
 }
 ```
+
+<div style="display: flex; align-items: center; gap: 20px;" align="center">
+  
+### 🚨 [Remote LED Blink](https://github.com/akashdip2001/Remote-LED-Blink/blob/main/README.md)
+</div>
+
+---
+---
+
 </details>
 
 ## **Raspberry Pi Pico W File Download with SD Card Logging (Arduino IDE)**
