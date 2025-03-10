@@ -3,9 +3,6 @@
   # NAS with Raspberry Pi Pico W
   ### 🛠️ The code is under under development, Not use it Now
 </br>
-  <img src="https://github.com/user-attachments/assets/da67dbeb-43d0-499c-a6a8-7c8213f99893" width="48%">
-  <img src="https://github.com/user-attachments/assets/5458a463-bbd4-46cf-be75-0567643aa84e" width="48%">
-  <br>
   <img src="https://github.com/user-attachments/assets/cc52c438-38f9-40d1-bbde-2d655391de7b" width="48%">
   <img src="https://github.com/user-attachments/assets/501f579e-a40c-4b4f-b6f8-b55ade17408c" width="48%">
 </div>
@@ -37,6 +34,11 @@ You'll need:
 | MOSI            | GPIO19 (SPI0 MOSI) |
 | SCK             | GPIO18 (SPI0 SCK) |
 | CS (Chip Select) | GPIO17 |
+
+</br>
+  <img src="https://github.com/user-attachments/assets/da67dbeb-43d0-499c-a6a8-7c8213f99893" width="48%">
+  <img src="https://github.com/user-attachments/assets/5458a463-bbd4-46cf-be75-0567643aa84e" width="48%">
+</div>
 
 ---
 
