@@ -932,6 +932,15 @@ http://192.168.4.1/logs.txt
 <div style="display: flex; align-items: center; gap: 10px;" align="center">
   
 # ⭐ want to [Try in Raspberry-Pi](RaspberryPi.md) ? ⭐
+# or, update `NAS 2.O`
 </div>
+
+### NAS 2.O
+
+- Update the Web interface
+- Mount like a Drive in PC
+
+![Screenshot (605)](https://github.com/user-attachments/assets/ab01625b-59b9-4237-b696-44f3057f231a)
+
 
 ---
