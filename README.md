@@ -364,7 +364,7 @@ The error should now be resolved, and your sketch should compile successfully.
 
 </br>
 
-<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/78ad34a3-1575-4b14-a7eb-0682fe62a2e0" />
+[<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/78ad34a3-1575-4b14-a7eb-0682fe62a2e0" />](https://tcsglobal.udemy.com/course/data-engineering-101-the-beginners-guide/learn/lecture/43134006#overview)
 
 </br>
 
