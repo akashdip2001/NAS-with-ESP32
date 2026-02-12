@@ -4,6 +4,7 @@ Network-attached storage with ESP WROOM 32
 ## 🛜 ESP connect to WIFI wifi access point
 
 ![IMG20250308224147](https://github.com/user-attachments/assets/990f521b-1cbf-4b56-bc4b-e6813886b94f)
+
 <details>
   <summary style="opacity: 0.85;">❌ Testing Code with Authentication</b></summary><br>
 
@@ -365,7 +366,13 @@ The error should now be resolved, and your sketch should compile successfully.
 </br>
 
 [<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/78ad34a3-1575-4b14-a7eb-0682fe62a2e0" />](https://tcsglobal.udemy.com/course/data-engineering-101-the-beginners-guide/learn/lecture/43134006#overview)
+<details>
+  <summary style="opacity: 0.85;">Learn more about Storage</b></summary><br>
 
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/82728f8d-b259-4c0e-8204-9c9e77acac28" />
+
+</details>
+  
 </br>
 
 ---
